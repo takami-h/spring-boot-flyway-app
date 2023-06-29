@@ -1,4 +1,4 @@
-package com.redhat.labs.springboot.flyway;
+package com.redhat.labs.springboot.flyway.adapter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,19 +14,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.redhat.labs.springboot.flyway.application.Todo;
+import com.redhat.labs.springboot.flyway.application.TodoService;
+
 @RestController
 @Transactional
 public class TodoController {
   private static final DateTimeFormatter DATEF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  private TodoRepository repos;
+  private TodoService service;
 
-  public TodoController(TodoRepository repos) {
-    this.repos = repos;
+  public TodoController(TodoService service) {
+    this.service = service;
   }
 
   @GetMapping(value = "/todos", produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<List<Todo>> loadAllTodos() {
-    var todos = repos.findAll();
+    var todos = service.loadAll();
 
     return ResponseEntity.ok(todos);
   }
@@ -38,7 +41,7 @@ public class TodoController {
 
     Optional<LocalDate> dueToDate = dueTo.map(due -> LocalDate.from(DATEF.parse(due)));
 
-    repos.save(Todo.newTodo(title, dueToDate));
+    service.save(Todo.newTodo(title, dueToDate));
 
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }

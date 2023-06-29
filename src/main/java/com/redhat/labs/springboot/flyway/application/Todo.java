@@ -1,4 +1,4 @@
-package com.redhat.labs.springboot.flyway;
+package com.redhat.labs.springboot.flyway.application;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
