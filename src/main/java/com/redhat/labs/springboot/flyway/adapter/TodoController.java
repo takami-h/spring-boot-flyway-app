@@ -1,10 +1,12 @@
 package com.redhat.labs.springboot.flyway.adapter;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriTemplate;
 
 import com.redhat.labs.springboot.flyway.application.Todo;
 import com.redhat.labs.springboot.flyway.application.TodoService;
@@ -41,8 +45,9 @@ public class TodoController {
 
     Optional<LocalDate> dueToDate = dueTo.map(due -> LocalDate.from(DATEF.parse(due)));
 
-    service.save(Todo.newTodo(title, dueToDate));
+    var saved = service.save(Todo.newTodo(title, dueToDate));
 
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+    var location = new UriTemplate("/todos/{id}").expand(saved.getId());
+    return ResponseEntity.created(location).build();
   }
 }
