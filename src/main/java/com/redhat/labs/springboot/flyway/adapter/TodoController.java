@@ -2,6 +2,8 @@ package com.redhat.labs.springboot.flyway.adapter;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +33,7 @@ public class TodoController {
   }
 
   @PostMapping("/todos")
-  public ResponseEntity<Void> addTodo(@RequestBody TodoEntry todoEntry) {
+  public ResponseEntity<Void> addTodo(@RequestBody @Valid TodoEntry todoEntry) {
     var saved = service.save(todoEntry.toTodo());
 
     var location = new UriTemplate("/todos/{id}").expand(saved.getId());
