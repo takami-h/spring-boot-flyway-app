@@ -19,7 +19,7 @@ public class TodoEntry {
   private String dueTo;
 
   public Todo toTodo() {
-    Optional<LocalDate> dueToDate = dueTo != null ? Optional.of(LocalDate.from(DATEF.parse(dueTo))) : Optional.empty();
+    var dueToDate = Optional.ofNullable(dueTo).map(str -> LocalDate.from(DATEF.parse(str)));
 
     return Todo.newTodo(title, dueToDate);
   }
