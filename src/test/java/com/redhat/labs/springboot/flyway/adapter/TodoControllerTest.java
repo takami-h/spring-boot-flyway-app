@@ -86,4 +86,31 @@ public class TodoControllerTest {
     .then()
       .statusCode(HttpStatus.BAD_REQUEST.value());
   }
+
+  @Test void postTodo400IfTitleEmpty() {
+    var todo = new TodoEntry();
+    todo.setTitle("tooooooooooooooooooolooooooooooooooooooooongtitttttttttttttttttttttttttttttttttttttttttttttttttttttle");
+    todo.setDueTo("");
+
+    given()
+      .log().all()
+      .contentType(ContentType.JSON)
+      .body(todo)
+    .when()
+      .post("/todos")
+    .then()
+      .statusCode(HttpStatus.BAD_REQUEST.value())
+      .body(
+        "invalidParams[0].name", equalTo("title"),
+        "invalidParams[0].reason", equalTo("タイトルは100文字以内です"));
+    /*
+     * {
+     *   title: 'xxx',
+     *   detail: 'xxxxxx',
+     *   invalidParams: [
+     *     {name: 'title', reason: 'タイトルは100文字以内です'}
+     *   ]
+     * }
+     */
+  }
 }
